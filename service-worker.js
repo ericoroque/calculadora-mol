@@ -1,20 +1,21 @@
-self.addEventListener('install', function(e) {
-    e.waitUntil(
-      caches.open('mol-calc-v1').then(function(cache) {
-        return cache.addAll([
-          './',
-          './index.html',
-          './manifest.json'
-        ]);
-      })
-    );
-  });
-  
-  self.addEventListener('fetch', function(e) {
-    e.respondWith(
-      caches.match(e.request).then(function(response) {
-        return response || fetch(e.request);
-      })
-    );
-  });
-  
+const CACHE_NAME = 'molcalc-v1';
+const ASSETS = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icons/icon-192x192.png'
+];
+
+self.addEventListener('install', (e) => {
+  e.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(ASSETS))
+  );
+});
+
+self.addEventListener('fetch', (e) => {
+  e.respondWith(
+    caches.match(e.request)
+      .then(response => response || fetch(e.request))
+  );
+});
