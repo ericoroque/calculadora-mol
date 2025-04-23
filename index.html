@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="manifest" href="manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('Service Worker registrado com sucesso!'));
+  }
+</script>
+
+  <meta charset="UTF-8">
+  <title>Calculadora de Mol</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 15px;
+      background: #f4f4f4;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    label, select, input, button {
+      display: block;
+      margin: 10px 0;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    select {
+      height: 120px;
+      overflow-y: auto;
+    }
+
+    #resultado {
+      margin-top: 20px;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid #ccc;
+      font-size: 18px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Calculadora de Mol</h2>
+
+  <label for="massa">Massa (g):</label>
+  <input type="number" id="massa" placeholder="Ex: 58.44">
+
+  <label for="substancia">Substância:</label>
+  <select id="substancia" size="8">
+    <!-- As substâncias vão aqui -->
+  </select>
+
+  <button onclick="calcular()">Calcular Mol</button>
+
+  <div id="resultado">Resultado: --</div>
+
+  <script>
+    const massas = {
+      NaCl: { nome: "Cloreto de Sódio (NaCl)", massa: 58.44 },
+      HCl: { nome: "Ácido Clorídrico (HCl)", massa: 36.46 },
+      NaOH: { nome: "Hidróxido de Sódio (NaOH)", massa: 40.00 },
+      H2SO4: { nome: "Ácido Sulfúrico (H₂SO₄)", massa: 98.08 },
+      HNO3: { nome: "Ácido Nítrico (HNO₃)", massa: 63.01 },
+      KOH: { nome: "Hidróxido de Potássio (KOH)", massa: 56.11 },
+      NH3: { nome: "Amônia (NH₃)", massa: 17.03 },
+      CO2: { nome: "Dióxido de Carbono (CO₂)", massa: 44.01 },
+      H2O: { nome: "Água (H₂O)", massa: 18.02 },
+      C6H12O6: { nome: "Glicose (C₆H₁₂O₆)", massa: 180.16 },
+      CaCO3: { nome: "Carbonato de Cálcio (CaCO₃)", massa: 100.09 },
+      Na2CO3: { nome: "Carbonato de Sódio (Na₂CO₃)", massa: 105.99 },
+      KMnO4: { nome: "Permanganato de Potássio (KMnO₄)", massa: 158.03 },
+      CuSO4: { nome: "Sulfato de Cobre (II)", massa: 159.61 },
+      KNO3: { nome: "Nitrato de Potássio (KNO₃)", massa: 101.10 },
+      CH3COOH: { nome: "Ácido Acético (CH₃COOH)", massa: 60.05 },
+      C2H5OH: { nome: "Etanol (C₂H₅OH)", massa: 46.07 },
+      CH4: { nome: "Metano (CH₄)", massa: 16.04 },
+      Ca(OH)2: { nome: "Hidróxido de Cálcio", massa: 74.09 }
+    };
+
+    const select = document.getElementById("substancia");
+
+    // Adiciona as opções no select
+    Object.entries(massas).forEach(([key, val]) => {
+      const opt = document.createElement("option");
+      opt.value = key;
+      opt.textContent = `${val.nome} — ${val.massa} g/mol`;
+      select.appendChild(opt);
+    });
+
+    function calcular() {
+      const massa = parseFloat(document.getElementById("massa").value);
+      const substancia = document.getElementById("substancia").value;
+
+      if (!massa || !substancia) {
+        document.getElementById("resultado").innerText = "Preencha todos os campos.";
+        return;
+      }
+
+      const massaMolar = massas[substancia].massa;
+      const mols = (massa / massaMolar).toFixed(4);
+      document.getElementById("resultado").innerText = `Resultado: ${mols} mol`;
+    }
+  </script>
+</body>
+</html>
