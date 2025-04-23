@@ -1,240 +1,99 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora de Mol</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Dissolução</title>
   <style>
-    :root {
-      --primary-color: #4a6fa5;
-      --secondary-color: #166088;
-      --background-color: #f8f9fa;
-      --text-color: #333;
-      --border-color: #ddd;
-      --hover-color: #e9ecef;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.6;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
       margin: 0;
-      padding: 20px;
-      background-color: var(--background-color);
-      color: var(--text-color);
-      max-width: 800px;
-      margin: 0 auto;
+      padding: 1rem;
     }
-
-    h2 {
+    h1 {
       text-align: center;
-      color: var(--secondary-color);
-      margin-bottom: 25px;
     }
-
-    .calculator-container {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      padding: 25px;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: var(--secondary-color);
-    }
-
-    input, select, button {
+    select, input, button {
       width: 100%;
-      padding: 12px;
-      margin-bottom: 20px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
+      padding: 10px;
+      margin-top: 10px;
       font-size: 16px;
-      transition: border 0.3s;
     }
-
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
-    }
-
-    select {
-      height: auto;
-      min-height: 120px;
-      overflow-y: auto;
-    }
-
-    option {
-      padding: 8px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    option:hover {
-      background-color: var(--hover-color);
-    }
-
     button {
-      background-color: var(--primary-color);
+      background: #2196f3;
       color: white;
       border: none;
       cursor: pointer;
-      font-weight: 600;
-      transition: background-color 0.3s;
     }
-
     button:hover {
-      background-color: var(--secondary-color);
+      background: #1976d2;
     }
-
     #resultado {
       margin-top: 20px;
-      padding: 15px;
-      background-color: #f1f8ff;
-      border-left: 4px solid var(--primary-color);
+      text-align: center;
       font-size: 18px;
-      border-radius: 4px;
-    }
-
-    /* Responsividade */
-    @media (max-width: 600px) {
-      body {
-        padding: 15px;
-      }
-      
-      .calculator-container {
-        padding: 15px;
-      }
-      
-      input, select, button {
-        padding: 10px;
-      }
-    }
-
-    /* Melhorias para a lista */
-    .search-container {
-      position: relative;
-      margin-bottom: 10px;
-    }
-
-    #search {
-      padding-left: 35px;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #666;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="calculator-container">
-    <h2>Calculadora de Mol</h2>
+  <h1>Calculadora de Dissolução</h1>
+  <label for="substancia">Substância:</label>
+  <select id="substancia">
+    <option value="">Selecione...</option>
+  </select>
 
-    <div class="search-container">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="search" placeholder="Pesquisar substância...">
-    </div>
+  <label for="concentracao">Concentração (mol/L):</label>
+  <input type="number" id="concentracao" step="any" placeholder="Ex: 1.0" />
 
-    <label for="massa">Massa (g):</label>
-    <input type="number" id="massa" placeholder="Ex: 58.44" step="any">
+  <label for="volume">Volume do solvente (L):</label>
+  <input type="number" id="volume" step="any" placeholder="Ex: 0.5" />
 
-    <label for="substancia">Substância:</label>
-    <select id="substancia" size="8">
-      <!-- As substâncias serão adicionadas via JavaScript -->
-    </select>
+  <button onclick="calcular()">Calcular</button>
 
-    <button onclick="calcular()">Calcular Mol</button>
-
-    <div id="resultado">Informe a massa e selecione uma substância</div>
-  </div>
+  <div id="resultado"></div>
 
   <script>
-    const massas = {
-      NaCl: { nome: "Cloreto de Sódio (NaCl)", massa: 58.44 },
-      HCl: { nome: "Ácido Clorídrico (HCl)", massa: 36.46 },
-      NaOH: { nome: "Hidróxido de Sódio (NaOH)", massa: 40.00 },
-      H2SO4: { nome: "Ácido Sulfúrico (H₂SO₄)", massa: 98.08 },
-      HNO3: { nome: "Ácido Nítrico (HNO₃)", massa: 63.01 },
-      KOH: { nome: "Hidróxido de Potássio (KOH)", massa: 56.11 },
-      NH3: { nome: "Amônia (NH₃)", massa: 17.03 },
-      CO2: { nome: "Dióxido de Carbono (CO₂)", massa: 44.01 },
-      H2O: { nome: "Água (H₂O)", massa: 18.02 },
-      C6H12O6: { nome: "Glicose (C₆H₁₂O₆)", massa: 180.16 },
-      CaCO3: { nome: "Carbonato de Cálcio (CaCO₃)", massa: 100.09 },
-      Na2CO3: { nome: "Carbonato de Sódio (Na₂CO₃)", massa: 105.99 },
-      KMnO4: { nome: "Permanganato de Potássio (KMnO₄)", massa: 158.03 },
-      CuSO4: { nome: "Sulfato de Cobre (II)", massa: 159.61 },
-      KNO3: { nome: "Nitrato de Potássio (KNO₃)", massa: 101.10 },
-      CH3COOH: { nome: "Ácido Acético (CH₃COOH)", massa: 60.05 },
-      C2H5OH: { nome: "Etanol (C₂H₅OH)", massa: 46.07 },
-      CH4: { nome: "Metano (CH₄)", massa: 16.04 },
-      Ca(OH)2: { nome: "Hidróxido de Cálcio", massa: 74.09 }
+    const substancias = {
+      "Água (H₂O)": 18.02,
+      "Cloreto de sódio (NaCl)": 58.44,
+      "Sacarose (C₁₂H₂₂O₁₁)": 342.30,
+      "Ácido clorídrico (HCl)": 36.46,
+      "Hidróxido de sódio (NaOH)": 40.00,
+      "Ácido sulfúrico (H₂SO₄)": 98.08,
+      "Ácido nítrico (HNO₃)": 63.01,
+      "Amônia (NH₃)": 17.03,
+      "Glicose (C₆H₁₂O₆)": 180.16,
+      "Carbonato de sódio (Na₂CO₃)": 105.99,
+      "Etanol (C₂H₅OH)": 46.07,
+      "Ácido acético (CH₃COOH)": 60.05,
+      "Bicarbonato de sódio (NaHCO₃)": 84.01,
+      "Ácido fosfórico (H₃PO₄)": 97.99,
+      "Sulfato de cobre (CuSO₄)": 159.61
     };
 
     const select = document.getElementById("substancia");
-    const searchInput = document.getElementById("search");
-
-    // Função para popular a lista
-    function populateList(filter = "") {
-      select.innerHTML = ""; // Limpa a lista
-      
-      Object.entries(massas)
-        .filter(([key, val]) => 
-          val.nome.toLowerCase().includes(filter.toLowerCase()) || 
-          key.toLowerCase().includes(filter.toLowerCase())
-        )
-        .forEach(([key, val]) => {
-          const opt = document.createElement("option");
-          opt.value = key;
-          opt.textContent = `${val.nome} — ${val.massa} g/mol`;
-          select.appendChild(opt);
-        });
+    for (const nome in substancias) {
+      const opt = document.createElement("option");
+      opt.value = nome;
+      opt.textContent = nome + " (" + substancias[nome] + " g/mol)";
+      select.appendChild(opt);
     }
 
-    // Inicializa a lista
-    populateList();
-
-    // Adiciona funcionalidade de busca
-    searchInput.addEventListener("input", (e) => {
-      populateList(e.target.value);
-    });
-
     function calcular() {
-      const massa = parseFloat(document.getElementById("massa").value);
-      const substancia = document.getElementById("substancia").value;
-      const resultadoElement = document.getElementById("resultado");
+      const nome = document.getElementById("substancia").value;
+      const conc = parseFloat(document.getElementById("concentracao").value);
+      const vol = parseFloat(document.getElementById("volume").value);
+      const resultado = document.getElementById("resultado");
 
-      if (isNaN(massa) || massa <= 0) {
-        resultadoElement.innerText = "Por favor, insira uma massa válida maior que zero.";
-        resultadoElement.style.color = "#d9534f";
+      if (!nome || isNaN(conc) || isNaN(vol)) {
+        resultado.textContent = "Preencha todos os campos corretamente.";
         return;
       }
 
-      if (!substancia) {
-        resultadoElement.innerText = "Por favor, selecione uma substância.";
-        resultadoElement.style.color = "#d9534f";
-        return;
-      }
-
-      const massaMolar = massas[substancia].massa;
-      const mols = (massa / massaMolar).toFixed(4);
-      
-      resultadoElement.innerHTML = `
-        <strong>Resultado:</strong> ${mols} mol<br>
-        <small>Para ${massa}g de ${massas[substancia].nome} (Massa molar: ${massaMolar} g/mol)</small>
-      `;
-      resultadoElement.style.color = "var(--text-color)";
+      const massa = conc * vol * substancias[nome];
+      resultado.textContent = `Você deve dissolver ${massa.toFixed(2)} g de ${nome}.`;
     }
   </script>
 </body>
