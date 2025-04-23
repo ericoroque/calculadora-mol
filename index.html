@@ -1,78 +1,37 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora de Dissolução</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 1rem;
-    }
-    h1 {
-      text-align: center;
-    }
+    body { font-family: sans-serif; padding: 1rem; background: #f4f4f4; }
+    h1 { text-align: center; }
     select, input, button {
       width: 100%;
       padding: 10px;
-      margin-top: 10px;
       font-size: 16px;
+      margin-top: 10px;
     }
-    button {
-      background: #2196f3;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #1976d2;
-    }
-    #resultado {
-      margin-top: 20px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: bold;
-    }
+    button { background-color: #2196f3; color: white; border: none; }
+    #resultado { margin-top: 20px; text-align: center; font-weight: bold; }
   </style>
 </head>
 <body>
   <h1>Calculadora de Dissolução</h1>
-  <label for="substancia">Substância:</label>
+  <label>Substância:</label>
   <select id="substancia">
     <option value="">Selecione...</option>
   </select>
-
-  <label for="concentracao">Concentração (mol/L):</label>
-  <input type="number" id="concentracao" step="any" placeholder="Ex: 1.0" />
-
-  <label for="volume">Volume do solvente (L):</label>
-  <input type="number" id="volume" step="any" placeholder="Ex: 0.5" />
-
+  <label>Concentração desejada (mol/L):</label>
+  <input type="number" id="concentracao" placeholder="Ex: 0.5" step="any">
+  <label>Volume do solvente (L):</label>
+  <input type="number" id="volume" placeholder="Ex: 1.0" step="any">
   <button onclick="calcular()">Calcular</button>
-
   <div id="resultado"></div>
 
+  <script src="substancias.js"></script>
   <script>
-    const substancias = {
-      "Água (H₂O)": 18.02,
-      "Cloreto de sódio (NaCl)": 58.44,
-      "Sacarose (C₁₂H₂₂O₁₁)": 342.30,
-      "Ácido clorídrico (HCl)": 36.46,
-      "Hidróxido de sódio (NaOH)": 40.00,
-      "Ácido sulfúrico (H₂SO₄)": 98.08,
-      "Ácido nítrico (HNO₃)": 63.01,
-      "Amônia (NH₃)": 17.03,
-      "Glicose (C₆H₁₂O₆)": 180.16,
-      "Carbonato de sódio (Na₂CO₃)": 105.99,
-      "Etanol (C₂H₅OH)": 46.07,
-      "Ácido acético (CH₃COOH)": 60.05,
-      "Bicarbonato de sódio (NaHCO₃)": 84.01,
-      "Ácido fosfórico (H₃PO₄)": 97.99,
-      "Sulfato de cobre (CuSO₄)": 159.61
-    };
-
     const select = document.getElementById("substancia");
     for (const nome in substancias) {
       const opt = document.createElement("option");
@@ -92,7 +51,9 @@
         return;
       }
 
-      const massa = conc * vol * substancias[nome];
+      const massaMolar = substancias[nome];
+      const massa = conc * vol * massaMolar;
+
       resultado.textContent = `Você deve dissolver ${massa.toFixed(2)} g de ${nome}.`;
     }
   </script>
